@@ -76,6 +76,7 @@ defmodule ChangelogWeb.Router do
     resources "/people", PersonController
     post "/people/:id/slack", PersonController, :slack, as: :person
 
+    resources "/metacasts", MetacastController
     resources "/podcasts", PodcastController do
       resources "/episodes", EpisodeController
       post "/episodes/:id/publish", EpisodeController, :publish, as: :episode

@@ -1,0 +1,46 @@
+<%= form_for @changeset, @action, [multipart: true, class: "ui form"], fn f -> %>
+  <div class="field required <%= error_class(f, :name) %>">
+    <%= label(f, :name, "Name") %>
+    <%= text_input(f, :name, placeholder: "The Changelog") %>
+    <%= error_message(f, :name) %>
+  </div>
+
+  <div class="two fields">
+    <div class="fourteen wide field">
+      <label for="cover">
+        Cover
+        <%= help_icon("Ideal size is 3000px by 3000px") %>
+      </label>
+      <%= error_message(f, :cover) %>
+      <%= file_input(f, :cover) %>
+    </div>
+
+    <div class="two wide field">
+      <img src="<%= MetacastView.cover_url(f.data, :small) %>" height=66>
+    </div>
+  </div>
+
+  <div class="field <%= error_class(f, :description) %>">
+    <%= label(f, :description) %>
+    <%= textarea(f, :description, placeholder: "Markdown enabled.") %>
+    <%= error_message(f, :description) %>
+  </div>
+
+  <div class="field <%= error_class(f, :keywords) %>">
+    <%= label(f, :keywords) %>
+    <%= text_input(f, :keywords, placeholder: "changelog, open source, software, development") %>
+    <%= error_message(f, :keywords) %>
+  </div>
+
+  <div class="ui hidden divider"></div>
+  <div class="ui equal width stackable grid">
+  <%= if !is_persisted(f.data) do %>
+    <div class="column"><%= submit_button(:primary, "Create") %></div>
+    <div class="column"><%= submit_button(:secondary, "Create and Close", next_param(@conn, admin_metacast_path(@conn, :index))) %></div>
+  <% else %>
+    <div class="column"><%= submit_button(:primary, "Save", "edit") %></div>
+    <div class="column"><%= submit_button(:secondary, "Save and Close", next_param(@conn)) %></div>
+  <% end %>
+    <div class="column"></div>
+  </div>
+<% end %>
