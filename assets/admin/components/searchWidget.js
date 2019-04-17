@@ -2,12 +2,13 @@ import Sortable from "sortablejs";
 import autosize from "autosize";
 
 import personItem from "templates/personItem.hbs";
-import topicItem from "templates/topicItem.hbs";
+import podcastItem from "templates/podcastItem.hbs";
 import sponsorItem from "templates/sponsorItem.hbs";
+import topicItem from "templates/topicItem.hbs";
 
 export default class SearchWidget {
-  constructor(type, parentType, relationType) {
-    let $members = $(`.js-${relationType}`);
+  constructor(type, parentType, attrName) {
+    let $members = $(`.js-${attrName}`);
     let $search = $members.siblings(".search");
 
     var setPositions = function() {
@@ -22,6 +23,9 @@ export default class SearchWidget {
       switch (type) {
         case "person":
           return "<a href='/admin/people/new' target='_blank'>Add a Person</a>";
+          break;
+        case "podcast":
+          return "<a href='/admin/podcasts/new' target='_blank'>Add a Podcast</a>";
           break;
         case "sponsor":
           return "<a href='/admin/sponsors/new' target='_blank'>Add a Sponsor</a>";
@@ -46,7 +50,7 @@ export default class SearchWidget {
 
         let context = {
           parentType: parentType,
-          relationType: relationType,
+          attrName: attrName,
           id: selected.id,
           name: selected.title,
           handle: selected.description,
@@ -58,6 +62,9 @@ export default class SearchWidget {
         switch (type) {
           case "person":
             $list.append(personItem(context));
+            break;
+          case "podcast":
+            $list.append(podcastItem(context));
             break;
           case "sponsor":
             $list.append(sponsorItem(context));

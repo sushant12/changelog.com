@@ -3,18 +3,40 @@ defmodule Changelog.Metacast do
 
   alias Changelog.Files
 
+  defmodule PodcastReference do
+    use Changelog.Schema
+    @primary_key false
+    embedded_schema do
+      field :podcast_id, :integer
+      field :position, :integer
+    end
+
+    def changeset(struct, attrs), do: cast(struct, attrs, __MODULE__.__schema__(:fields))
+  end
+
+  defmodule TopicReference do
+    use Changelog.Schema
+    @primary_key false
+    embedded_schema do
+      field :topic_id, :integer
+      field :position, :integer
+    end
+
+    def changeset(struct, attrs), do: cast(struct, attrs, __MODULE__.__schema__(:fields))
+  end
+
   schema "metacasts" do
     field :name, :string
     field :description, :string
     field :keywords, :string
 
-    field :included_podcasts, {:array, :integer}
-    field :excluded_podcasts, {:array, :integer}
-
-    field :included_topics, {:array, :integer}
-    field :excluded_topics, {:array, :integer}
-
     field :cover, Files.Cover.Type
+
+    embeds_many :included_podcasts, PodcastReference, on_replace: :delete
+    embeds_many :excluded_podcasts, PodcastReference, on_replace: :delete
+
+    embeds_many :included_topics, TopicReference, on_replace: :delete
+    embeds_many :excluded_topics, TopicReference, on_replace: :delete
 
     timestamps()
   end
@@ -23,8 +45,12 @@ defmodule Changelog.Metacast do
 
   def insert_changeset(metacast, attrs \\ %{}) do
     metacast
-    |> cast(attrs, ~w(name description keywords included_podcasts excluded_podcasts included_topics excluded_topics)a)
+    |> cast(attrs, ~w(name description keywords)a)
     |> validate_required([:name])
+    |> cast_embed(:included_podcasts)
+    |> cast_embed(:excluded_podcasts)
+    |> cast_embed(:included_topics)
+    |> cast_embed(:excluded_topics)
   end
 
   def update_changeset(metacast, attrs \\ %{}) do
@@ -32,5 +58,4 @@ defmodule Changelog.Metacast do
     |> insert_changeset(attrs)
     |> file_changeset(attrs)
   end
-
 end

@@ -7,7 +7,7 @@ defmodule ChangelogWeb.Admin.MetacastController do
   plug Authorize, [Policies.AdminsOnly, :metacast]
   plug :scrub_params, "metacast" when action in [:create, :update]
 
-  def index(conn = %{assigns: %{current_user: user}}, _params) do
+  def index(conn, _params) do
     metacasts = Repo.all(Metacast)
 
     conn
@@ -16,7 +16,8 @@ defmodule ChangelogWeb.Admin.MetacastController do
   end
 
   def new(conn, _params) do
-    changeset = Metacast.insert_changeset(%Metacast{})
+    meta = %Metacast{included_podcasts: [], excluded_podcasts: [], included_topics: [], excluded_topics: []}
+    changeset = Metacast.insert_changeset(meta)
     render(conn, :new, changeset: changeset)
   end
 

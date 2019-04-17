@@ -4,8 +4,11 @@ defmodule ChangelogWeb.Admin.PodcastView do
   alias Changelog.{EpisodeStat, Podcast, Repo, Topic}
   alias ChangelogWeb.PodcastView
 
+  def cover_url(podcast), do: PodcastView.cover_url(podcast)
+  def cover_url(podcast, version), do: PodcastView.cover_url(podcast, version)
+
   def episode_count(podcast), do: PodcastView.episode_count(podcast)
-  def download_count(podcast), do: podcast.download_count |> round |> comma_separated
+  def download_count(podcast), do: podcast.download_count |> round() |> comma_separated()
   def reach_count(podcast) do
     if podcast.reach_count > podcast.download_count do
       comma_separated(podcast.reach_count)
@@ -19,7 +22,7 @@ defmodule ChangelogWeb.Admin.PodcastView do
     |> Ecto.assoc(:episode_stats)
     |> EpisodeStat.newest_first()
     |> EpisodeStat.limit(1)
-    |> Repo.one
+    |> Repo.one()
   end
 
   def position_options do

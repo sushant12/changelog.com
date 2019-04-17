@@ -98,7 +98,7 @@
   <div class="field">
     <%= label(f, :topics) %>
 
-    <div class="ui horizontal selection list js-topics">
+    <div class="ui horizontal selection list js-news_item_topics">
       <%= inputs_for f, :news_item_topics, fn i -> %>
         <% topic = load_from_form(i, Topic, :topic) %>
         <div class="item <%= if is_persisted(i.data), do: "persisted" %>">

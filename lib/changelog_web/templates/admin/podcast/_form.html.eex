@@ -48,30 +48,30 @@
     </div>
 
     <div class="two wide field">
-      <img src="<%= PodcastView.cover_url(f.data, :small) %>" height=66>
+      <img src="<%= cover_url(f.data, :small) %>" height=66>
     </div>
   </div>
 
   <div class="required field">
     <%= label(f, :hosts) %>
 
-    <div class="ui middle aligned selection list js-hosts">
-      <%= inputs_for f, :podcast_hosts, fn i -> %>
-        <div class="item <%= if is_persisted(i.data), do: "persisted" %>">
-          <%= hidden_input i, :person_id %>
-          <%= hidden_input i, :position, class: "js-position" %>
-          <img class="ui avatar image" src="<%= ChangelogWeb.PersonView.avatar_url(i.data.person) %>">
+    <div class="ui middle aligned selection list js-podcast-hosts">
+    <%= inputs_for f, :podcast_hosts, fn i -> %>
+      <div class="item <%= if is_persisted(i.data), do: "persisted" %>">
+        <%= hidden_input i, :person_id %>
+        <%= hidden_input i, :position, class: "js-position" %>
+        <img class="ui avatar image" src="<%= ChangelogWeb.PersonView.avatar_url(i.data.person) %>">
 
-          <div class="content">
-            <div class="header"><%= i.data.person.name %> (@<%= i.data.person.handle %>)</div>
-          </div>
-
-          <div class="right floated content">
-            <div class="ui tiny icon button js-remove"><i class="remove icon"></i></div>
-            <%= hidden_input i, :delete %>
-          </div>
+        <div class="content">
+          <div class="header"><%= i.data.person.name %> (@<%= i.data.person.handle %>)</div>
         </div>
-      <% end %>
+
+        <div class="right floated content">
+          <div class="ui tiny icon button js-remove"><i class="remove icon"></i></div>
+          <%= hidden_input i, :delete %>
+        </div>
+      </div>
+    <% end %>
     </div>
 
     <div class="ui search">
@@ -85,7 +85,7 @@
   <div class="field">
     <%= label(f, :topics) %>
 
-    <div class="ui horizontal selection list js-topics">
+    <div class="ui horizontal selection list js-podcast_topics">
       <%= inputs_for f, :podcast_topics, fn i -> %>
         <% topic = load_from_form(i, Topic, :topic) %>
         <div class="item <%= if is_persisted(i.data), do: "persisted" %>">

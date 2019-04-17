@@ -8,10 +8,10 @@ defmodule Changelog.Repo.Migrations.CreateMetacasts do
       add :keywords, :string
       add :cover, :string
 
-      add :included_podcasts, {:array, :integer}, default: []
-      add :excluded_podcasts, {:array, :integer}, default: []
-      add :included_topics, {:array, :integer}, default: []
-      add :excluded_topics, {:array, :integer}, default: []
+      add :included_podcasts, :map
+      add :excluded_podcasts, :map
+      add :included_topics, :map
+      add :excluded_topics, :map
 
       timestamps()
     end

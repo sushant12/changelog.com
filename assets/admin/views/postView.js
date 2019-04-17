@@ -7,7 +7,7 @@ export default class PostView {
   new() {
     new BelongsToWidget("author", "person");
     new Slugifier("#post_title", "#post_slug");
-    new SearchWidget("topic", "post", "topics");
+    new SearchWidget("topic", "post", "post_topics");
     new CalendarField(".ui.calendar");
   }
 

@@ -4,7 +4,7 @@ defmodule ChangelogWeb.Admin.SearchView do
   alias Changelog.{EpisodeSponsor, Faker, NewsItem, Repo}
   alias ChangelogWeb.Endpoint
   alias ChangelogWeb.Admin.{TopicView, EpisodeView, NewsItemView, NewsSourceView,
-                            PersonView, PostView, SponsorView}
+                            PersonView, PodcastView, PostView, SponsorView}
 
   @limit 3
 
@@ -15,6 +15,7 @@ defmodule ChangelogWeb.Admin.SearchView do
       news_items: %{name: "News", results: process_results(results.news_items, &news_item_result/1)},
       news_sources: %{name: "Sources", results: process_results(results.news_sources, &news_source_result/1)},
       people: %{name: "People", results: process_results(results.people, &person_result/1)},
+      podcasts: %{name: "Podcasts", results: process_results(results.podcasts, &podcast_result/1)},
       posts: %{name: "Posts", results: process_results(results.posts, &post_result/1)},
       sponsors: %{name: "Sponsors", results: process_results(results.sponsors, &sponsor_result/1)}}}
 
@@ -26,37 +27,29 @@ defmodule ChangelogWeb.Admin.SearchView do
     end
   end
 
-  def render("topic.json", _params = %{results: results, query: _query}) do
-    %{results: Enum.map(results, &topic_result/1)}
+  def render(json_template, _params = %{results: results, query: _query}) do
+    process_fn = case json_template do
+      "news_item.json" -> &news_item_result/1
+      "news_source.json" -> &news_source_result/1
+      "person.json" -> &person_result/1
+      "podcast.json" -> &podcast_result/1
+      "sponsor.json" -> &sponsor_result/1
+      "topic.json" -> &topic_result/1
+    end
+
+    %{results: Enum.map(results, process_fn)}
   end
 
-  def render("news_item.json", _params = %{results: results, query: _query}) do
-    %{results: Enum.map(results, &news_item_result/1)}
-  end
-
-  def render("news_source.json", _params = %{results: results, query: _query}) do
-    %{results: Enum.map(results, &news_source_result/1)}
-  end
-
-  def render("person.json", _params = %{results: results, query: _query}) do
-    %{results: Enum.map(results, &person_result/1)}
-  end
-
-  def render("sponsor.json", _params = %{results: results, query: _query}) do
-    %{results: Enum.map(results, &sponsor_result/1)}
-  end
-
-  defp process_results(records, processFn) do
+  defp process_results(records, process_fn) do
     records
     |> Enum.take(@limit)
-    |> Enum.map(processFn)
+    |> Enum.map(process_fn)
   end
 
-  defp topic_result(topic) do
-    %{id: topic.id,
-      title: topic.name,
-      image: TopicView.icon_url(topic),
-      url: admin_topic_path(Endpoint, :edit, topic.slug)}
+  defp episode_result(episode) do
+    %{id: episode.id,
+      title: EpisodeView.numbered_title(episode),
+      url: admin_podcast_episode_path(Endpoint, :show, episode.podcast.slug, episode.slug)}
   end
 
   defp news_item_result(news_item) do
@@ -70,12 +63,6 @@ defmodule ChangelogWeb.Admin.SearchView do
       title: news_source.name,
       image: NewsSourceView.icon_url(news_source),
       url: admin_news_source_path(Endpoint, :edit, news_source)}
-  end
-
-  defp episode_result(episode) do
-    %{id: episode.id,
-      title: EpisodeView.numbered_title(episode),
-      url: admin_podcast_episode_path(Endpoint, :show, episode.podcast.slug, episode.slug)}
   end
 
   defp person_result(person) do
@@ -92,8 +79,17 @@ defmodule ChangelogWeb.Admin.SearchView do
       url: admin_person_path(Endpoint, :edit, person)}
   end
 
+  defp podcast_result(podcast) do
+    %{id: podcast.id,
+      title: podcast.name,
+      image: PodcastView.cover_url(podcast, :small),
+      url: admin_podcast_path(Endpoint, :edit, podcast.slug)}
+  end
+
   defp post_result(post) do
-    %{title: post.title, url: admin_post_path(Endpoint, :edit, post)}
+    %{id: post.id,
+      title: post.title,
+      url: admin_post_path(Endpoint, :edit, post)}
   end
 
   defp sponsor_result(sponsor) do
@@ -119,5 +115,12 @@ defmodule ChangelogWeb.Admin.SearchView do
       image: SponsorView.avatar_url(sponsor, :small),
       url: admin_sponsor_path(Endpoint, :edit, sponsor),
       extras: extras}
+  end
+
+  defp topic_result(topic) do
+    %{id: topic.id,
+      title: topic.name,
+      image: TopicView.icon_url(topic),
+      url: admin_topic_path(Endpoint, :edit, topic.slug)}
   end
 end

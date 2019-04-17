@@ -1,4 +1,4 @@
-<%= form_for @changeset, @action, [multipart: true, class: "ui form"], fn f -> %>
+  <%= form_for @changeset, @action, [multipart: true, class: "ui form"], fn f -> %>
   <div class="field required <%= error_class(f, :name) %>">
     <%= label(f, :name, "Name") %>
     <%= text_input(f, :name, placeholder: "The Changelog") %>
@@ -30,6 +30,126 @@
     <%= label(f, :keywords) %>
     <%= text_input(f, :keywords, placeholder: "changelog, open source, software, development") %>
     <%= error_message(f, :keywords) %>
+  </div>
+
+  <div class="field">
+    <%= label(f, :included_podcasts) %>
+
+    <div class="ui middle aligned selection list js-included_podcasts">
+    <%= inputs_for f, :included_podcasts, fn(i) -> %>
+      <% podcast = load_from_form(i, Podcast, :podcast) %>
+      <div class="item">
+        <%= hidden_input(i, :podcast_id) %>
+        <%= hidden_input(i, :position, class: "js-position") %>
+        <img class="ui tiny image" src="<%= PodcastView.cover_url(podcast) %>">
+        <div class="content">
+          <div class="header"><%= podcast.name %></div>
+        </div>
+
+        <div class="right floated content">
+          <div class="ui tiny icon button js-remove"><i class="remove icon"></i></div>
+          <%= hidden_input(i, :delete) %>
+        </div>
+      </div>
+    <% end %>
+    </div>
+
+    <div class="ui search">
+      <div class="ui left icon input">
+        <input class="prompt" type="text" placeholder="Add a Podcast">
+        <i class="unmute icon"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= label(f, :included_topics) %>
+
+    <div class="ui middle aligned selection list js-included_topics">
+    <%= inputs_for f, :included_topics, fn(i) -> %>
+      <% topic = load_from_form(i, Topic, :topic) %>
+      <div class="item">
+        <%= hidden_input(i, :topic_id) %>
+        <%= hidden_input(i, :position, class: "js-position") %>
+
+        <div class="content">
+          <a class="ui label">
+            <%= topic.name %>
+            <i class="delete icon js-remove"></i>
+            <%= hidden_input(i, :delete) %>
+          </a>
+        </div>
+      </div>
+    <% end %>
+    </div>
+
+    <div class="ui search">
+      <div class="ui left icon input">
+        <input class="prompt" type="text" placeholder="Add a Podcast">
+        <i class="unmute icon"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui section divider"></div>
+
+  <div class="field">
+    <%= label(f, :excluded_podcasts) %>
+
+    <div class="ui middle aligned selection list js-excluded_podcasts">
+    <%= inputs_for f, :excluded_podcasts, fn(i) -> %>
+      <% podcast = load_from_form(i, Podcast, :podcast) %>
+      <div class="item">
+        <%= hidden_input(i, :podcast_id) %>
+        <%= hidden_input(i, :position, class: "js-position") %>
+        <img class="ui tiny image" src="<%= PodcastView.cover_url(podcast) %>">
+        <div class="content">
+          <div class="header"><%= podcast.name %></div>
+        </div>
+
+        <div class="right floated content">
+          <div class="ui tiny icon button js-remove"><i class="remove icon"></i></div>
+          <%= hidden_input(i, :delete) %>
+        </div>
+      </div>
+    <% end %>
+    </div>
+
+    <div class="ui search">
+      <div class="ui left icon input">
+        <input class="prompt" type="text" placeholder="Add a Podcast">
+        <i class="unmute icon"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= label(f, :excluded_topics) %>
+
+    <div class="ui middle aligned selection list js-excluded_topics">
+    <%= inputs_for f, :excluded_topics, fn(i) -> %>
+      <% topic = load_from_form(i, Topic, :topic) %>
+      <div class="item">
+        <%= hidden_input(i, :topic_id) %>
+        <%= hidden_input(i, :position, class: "js-position") %>
+
+        <div class="content">
+          <a class="ui label">
+            <%= topic.name %>
+            <i class="delete icon js-remove"></i>
+            <%= hidden_input(i, :delete) %>
+          </a>
+        </div>
+      </div>
+    <% end %>
+    </div>
+
+    <div class="ui search">
+      <div class="ui left icon input">
+        <input class="prompt" type="text" placeholder="Add a Podcast">
+        <i class="unmute icon"></i>
+      </div>
+    </div>
   </div>
 
   <div class="ui hidden divider"></div>
